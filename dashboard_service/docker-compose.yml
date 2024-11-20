@@ -1,0 +1,41 @@
+version: '1.0'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: Scalable_Services
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  express:
+    build: .
+    container_name: dashboard-container
+    ports:
+      - "5010:5010"
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: Scalable_Services
+      DB_PORT: 3306
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
+    name: app-network
+
+
+volumes:
+  mysql-data:
+  
